@@ -13,6 +13,7 @@ The Template comes with various scripts, materials, models, along with the full 
 - Upon first boot, the users screen resoultion and default values will saved to a settings file.
 - Although the application uses the settings file, you can still override any settings property with launch options.
 - Able to communicate with the app via lua scripts.
+- A way to precache models and prefabs to prevent a lag spike when spawning models in-game.
 - Compatible with sandbox mode and the Game Launcher.
 - Customize the menu's color, text, logo, and fonts in a xml script!
 - Includes various useful scripts.
