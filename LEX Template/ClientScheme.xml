@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<menuscheme>
+	<!--Title-->
+	<title>
+		<image image="Materials/UI/Menu/gamelogo.tex" enable="1"/>
+		<position x="-64" y="-48"/>
+		<text title="L E A D W E R K S" font="Fonts/leadwerks.ttf" size="48"/>
+		<color r="255" g="255" b="255" a="255"/>
+	</title>
+	
+	<!--Menu Buttons-->
+	<buttons>
+		<text font="Fonts/leadwerks.ttf" size="12"/>
+		<colors>
+			<color r="255" g="255" b="255"/>
+			<rollover r="192" g="192" b="192"/>
+			<pressed r="96" g="96" b="96"/>
+		</colors>	
+		<sounds onrollover="Sound/UI/buttonclick01.wav" onpressed="Sound/UI/buttonclick02.wav"/>
+		<continue label="CONTINE GAME" />
+		<resume label="RESUME GAME" />
+		<newgame label="NEW GAME" />
+		<options label="OPTIONS" />
+		<quit label="QUIT" />
+	</buttons>
+</menuscheme>
+
+<basepanel r="45" g="45" b="45">
+	<border r="64" g="64" b="64" thickness="1"/>
+	<text>
+		<label font="fonts/leadwerks.ttf" size="10"/>
+		<message font="fonts/leadwerks.ttf" size="10"/>
+		<colors>
+			<label r="153" g="153" b="153"/>
+			<message r="241" g="241" b="241"/>
+		</colors>	
+	</text>	
+	
+	<buttons>
+		<text font="fonts/leadwerks.ttf" size="10"/>
+		<colors>
+			<color r="45" g="45" b="45"/>
+			<rollover r="192" g="192" b="192"/>
+			<pressed r="37" g="37" b="37"/>
+			<border r="64" g="64" b="64"/>
+		</colors>	
+	</buttons>	
+</basepanel>
