@@ -48,7 +48,7 @@ title="$PROJECT_TITLE"
 
 if not SANDBOX then
 	-- Tell the executable to create the App class!!
-	local backgroundmap = "Maps/start.map"
+	local backgroundmap = ""
 	app = App:Create(title, backgroundmap)
 	app:SetStartMap(startmap)
 		

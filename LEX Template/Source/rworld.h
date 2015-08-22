@@ -148,7 +148,6 @@ namespace LEX
 			m_bvsync = b;
 		}
 
-
 		//void FindActiveCamera
 
 	private:

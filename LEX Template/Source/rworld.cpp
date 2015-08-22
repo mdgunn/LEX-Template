@@ -68,6 +68,7 @@ void MapHook(Entity* entity, Object* extra)
 	objects.push_back(extra);
 	entities.push_back(entity);
 }
+
 namespace LEX
 {
 	RWorld::RWorld(int LightQuality)

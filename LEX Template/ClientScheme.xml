@@ -1,9 +1,17 @@
 <?xml version="1.0"?>
 <menuscheme>
+	<!--Background-->
+	<background>
+		<!--If no image is defined here, it will just call the loading screen texture.-->
+		<image image=""/>
+		<music file="" volume="75"/>
+	</background>
+
 	<!--Title-->
 	<title>
 		<image image="Materials/UI/Menu/gamelogo.tex" enable="1"/>
 		<position x="-64" y="-48"/>
+		<!--If the image is enabled, this below does not get called.-->
 		<text title="L E A D W E R K S" font="Fonts/leadwerks.ttf" size="48"/>
 		<color r="255" g="255" b="255" a="255"/>
 	</title>

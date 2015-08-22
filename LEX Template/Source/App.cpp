@@ -41,7 +41,7 @@ bool App::Start()
 	// Load all of our xml scripts.
 	if (FileSystem::GetFileType(FILE_SETTINGS) == 0)
 	{
-		System::Print("Failed to find settings file.");
+		Debug::Error("Failed to find settings file.");
 		return false;
 	}
 	else
@@ -89,7 +89,7 @@ bool App::Start()
 	m_bDrawStats = stoi(drawstats);
 
 	std::string vsync = miscsnode.attribute(PROPERTY_VSYNC).value();
-	DEVMSG(PROPERTY_DRAWSTATS + vsync);
+	DEVMSG(PROPERTY_VSYNC + vsync);
 
     // Toggle fullscreen.
 	unsigned int intStyle = Leadwerks::Window::Titlebar;
@@ -118,8 +118,8 @@ bool App::Start()
 	}
 
 	//Create a window.
-	int resx = atoi(System::GetProperty(PROPERTY_SCREENWIDTH, x).c_str());
-	int resy = atoi(System::GetProperty(PROPERTY_SCREENHEIGHT, y).c_str());
+	unsigned int resx = atoi(System::GetProperty(PROPERTY_SCREENWIDTH, x).c_str());
+	unsigned int resy = atoi(System::GetProperty(PROPERTY_SCREENHEIGHT, y).c_str());
 
 	// Title of window.
 	/*

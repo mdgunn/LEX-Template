@@ -39,8 +39,8 @@ namespace LEX
 
 	BaseButton::~BaseButton()
 	{
-		s_Rollover->Release();
-		s_Press->Release();
+		SAFE_RELEASE(s_Rollover)
+		SAFE_RELEASE(s_Press)
 	}
 
 	void BaseButton::Update()
@@ -347,9 +347,10 @@ namespace LEX
 		SetColor(45, 45, 45);
 		SetTextColor(241, 241, 241);
 		SetAlpha(255);
+		SetRolloverColor(64, 64, 70);
 		SetPressedColor(37, 37, 37);
 		SetBorderColor(64, 64, 64);
-
+		SetRolloverBorderColor(0, 112, 204);
 		Init();
 	}
 
@@ -360,7 +361,20 @@ namespace LEX
 	void RectButton::DrawBorder()
 	{
 		Leadwerks::Context* context = Leadwerks::Context::GetCurrent();
-		context->SetColor(GetBorderColor().x, GetBorderColor().y, GetBorderColor().z, GetAlpha());
+		//context->SetColor(GetBorderColor().x, GetBorderColor().y, GetBorderColor().z, GetAlpha());
+
+		if (mouseEvent == kEventMouseOver)
+		{
+			context->SetColor(GetRolloverBorderColor().x, GetRolloverBorderColor().y, GetRolloverBorderColor().z, GetAlpha());
+		}
+		else if (mouseEvent == kEventMouseLeftDown)
+		{
+			context->SetColor(GetBorderColor().x, GetBorderColor().y, GetBorderColor().z, GetAlpha());
+		}
+		else
+		{
+			context->SetColor(GetBorderColor().x, GetBorderColor().y, GetBorderColor().z, GetAlpha());
+		}
 
 		if (borderLineWidth <= 0)
 			return;

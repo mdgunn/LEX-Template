@@ -87,6 +87,8 @@ namespace LEX
 		QuitDialogPanel->cancelbutton->SetButtonLabel(CONTEXT_TEXT_NO);
 		QuitDialogPanel->activatebutton->SetButtonLabel(CONTEXT_TEXT_YES);
 
+		BGSource = Source::Create();
+
 		LoadMenuScheme();
 #ifdef DEBUG
 		//debugscreen = Leadwerks::Texture::Load("materials/debug/debug_screenposition.tex");
@@ -101,6 +103,8 @@ namespace LEX
 		SAFE_DELETE(BTN_NewGame);
 		SAFE_DELETE(BTN_Options);
 		SAFE_DELETE(BTN_Quit);
+
+		SAFE_RELEASE(BGSource);
 
 		SAFE_DELETE(NewGamePanel);
 		SAFE_DELETE(OptionsDialogPanel);
@@ -122,6 +126,36 @@ namespace LEX
 
 		xmlTitleRes.load_file(FILE_RESOURCE_MENUSCHEME);
 		xml_node rootmenunode = xmlTitleRes.child(NODE_MENUSCHEME_ROOT); // menuscheme
+
+		DEVMSG("VGUI: Setting up Background.");
+
+		// -<background>
+		xml_node bgnode = rootmenunode.child(NODE_MENUSCHEME_BACKGROUND);
+		xml_node bg_imagennode = bgnode.child(NODE_MENUSCHEME_TITLE_IMAGE);
+		m_stringBGTexture = bg_imagennode.attribute("image").value();
+
+		if (m_stringBGTexture != S_NULL)
+		{
+			background = Texture::Load(m_stringBGTexture);
+		}
+		else
+		{
+			background = Texture::Load(FILE_BACKGROUND);
+		}
+		
+		xml_node bg_musicnnode = bgnode.child(NODE_MENUSCHEME_BACKGROUND_MUSIC);
+		std::string music = bg_musicnnode.attribute("file").value();
+		float musicvol = atof(bg_musicnnode.attribute("volume").value());
+		if (FileSystem::GetFileType(music) == 1)
+		{
+			DEVMSG("VGUI: Setting Up Music: " + music);
+			BGMusic = Sound::Load(music);
+			BGSource->SetSound(BGMusic);
+			BGSource->SetVolume(musicvol/100);
+			SAFE_RELEASE(BGMusic);
+			BGSource->Stop();
+		}
+
 
 		DEVMSG("VGUI: Setting up title.");
 
@@ -289,6 +323,11 @@ namespace LEX
 		{
 		case RWorld_NotConnected:
 		{
+			if (BGSource->GetState() != Source::Playing)
+			{
+				BGSource->Play();
+			}
+
 			DrawMenu();
 			break;
 		}
@@ -299,6 +338,11 @@ namespace LEX
 			if (HasWindowOpen())
 			{
 				DrawBlackOverlay();
+			}
+
+			if (BGSource->GetState() != Source::Playing)
+			{
+				BGSource->Play();
 			}
 
 			DrawMenu();
@@ -321,6 +365,8 @@ namespace LEX
 				AdvOptionsDialogPanel->Close();
 				QuitDialogPanel->Close();
 			}
+
+			BGSource->Stop();
 
 			break;
 		}
@@ -414,10 +460,9 @@ namespace LEX
 			Leadwerks::Window* window = Leadwerks::Window::GetCurrent();
 			context->SetColor(1, 1, 1, 1);
 
-			Leadwerks::Texture* loadingscreen = Texture::Load(FILE_BACKGROUND);
-			if (loadingscreen)
+			if (background)
 			{
-				context->DrawImage(loadingscreen, 0, 0, context->GetWidth(), context->GetHeight());
+				context->DrawImage(background, 0, 0, context->GetWidth(), context->GetHeight());
 			}
 			else
 			{
@@ -444,6 +489,7 @@ namespace LEX
 
 			if (BTN_ContinueGame->GetMouseEvent() == kEventMouseLeftUp)
 			{
+				BGSource->Stop();
 				world->LoadSaveFile();
 			}
 
@@ -474,6 +520,7 @@ namespace LEX
 			}
 			else
 			{
+				BGSource->Stop();
 				world->LoadStartMap();
 			}
 		}
@@ -510,6 +557,7 @@ namespace LEX
 				{
 					if (world->LoadStartMap())
 					{
+						BGSource->Stop();
 						NewGamePanel->Close();
 					}
 					else

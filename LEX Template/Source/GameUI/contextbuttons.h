@@ -389,6 +389,24 @@ namespace LEX
 			return m_vec3BorderColor;
 		}
 
+		// Takes rrr,ggg,bbb then divides by 255 to turn it into a vector.
+		virtual void SetRolloverBorderColor(float r, float g, float b)
+		{
+			r = r / 255;
+			g = g / 255;
+			b = b / 255;
+
+			m_vec3RolloverBorderColor.x = r;
+			m_vec3RolloverBorderColor.y = g;
+			m_vec3RolloverBorderColor.z = b;
+
+		};
+
+		Vec3 GetRolloverBorderColor()
+		{
+			return m_vec3RolloverBorderColor;
+		}
+
 		short GetBorderLineWidth(void)
 		{
 			return borderLineWidth;
@@ -448,6 +466,7 @@ namespace LEX
 		//private:
 		short borderLineWidth;
 		Vec3 m_vec3BorderColor;
+		Vec3 m_vec3RolloverBorderColor;
 		Vec3 m_vec3TextColor;
 		Leadwerks::Font* buttonfont;
 		std::string m_btnmsg;

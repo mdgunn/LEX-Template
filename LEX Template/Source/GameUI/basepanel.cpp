@@ -57,7 +57,6 @@ namespace LEX
 	{
 		if (FileSystem::GetFileType(FILE_RESOURCE_MENUSCHEME) == 0)
 		{
-			DEVMSG("VGUI: Failed to find basepanel scheme file.");
 			SetColor(45, 45, 45);
 			SetAlpha(255);
 			SetBorderColor(64, 64, 64);

@@ -135,6 +135,8 @@ using namespace pugi;
 #define NODE_SETTINGS_MISC "misc"
 
 #define NODE_MENUSCHEME_ROOT "menuscheme"
+#define NODE_MENUSCHEME_BACKGROUND "background"
+#define NODE_MENUSCHEME_BACKGROUND_MUSIC "music"
 #define NODE_MENUSCHEME_TITLE "title"
 #define NODE_MENUSCHEME_TITLE_POSITION "position"
 #define NODE_MENUSCHEME_TITLE_TEXT "text"

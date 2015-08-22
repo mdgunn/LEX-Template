@@ -72,6 +72,11 @@ namespace LEX
 
 		bool m_bKillApp = false;
 		bool m_bloadedsave = false;
+
+		Leadwerks::Texture* background;
+		std::string m_stringBGTexture = FILE_BACKGROUND;
+		Leadwerks::Sound* BGMusic = NULL;
+		Leadwerks::Source* BGSource = NULL;
 	};
 }
 
