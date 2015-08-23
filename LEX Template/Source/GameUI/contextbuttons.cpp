@@ -83,6 +83,8 @@ namespace LEX
 		if (m_blocked)
 			return;
 
+		if (context->GetColor().w < 1.0) return;
+
 		Vec3 mousePos = window->GetMousePosition();
 
 		if (mousePos.x > worldPosX && mousePos.x < worldPosX + width && mousePos.y > worldPosY && mousePos.y < worldPosY + height)
@@ -171,6 +173,7 @@ namespace LEX
 	void TextButton::Render()
 	{
 		Context *context = Context::GetCurrent();
+		Vec4 oldr = context->GetColor();
 		Leadwerks::Font* oldfont = context->GetFont();
 
 		context->SetFont(font);
@@ -178,29 +181,29 @@ namespace LEX
 		{
 			if (mouseEvent == kEventMouseOver)
 			{
-				context->SetColor(GetRolloverColor().x, GetRolloverColor().y, GetRolloverColor().z, GetAlpha());
+				context->SetColor(GetRolloverColor().x, GetRolloverColor().y, GetRolloverColor().z);
 				//context->SetColor(m_flRolloverColorR, m_flRolloverColorG, m_flRolloverColorB);
 			}
 			else if (mouseEvent == kEventMouseLeftDown)
 			{
-				context->SetColor(GetPressedColor().x, GetPressedColor().y, GetPressedColor().z, GetAlpha());
+				context->SetColor(GetPressedColor().x, GetPressedColor().y, GetPressedColor().z);
 				//context->SetColor(m_flPressedColorR, m_flPressedColorG, m_flPressedColorB);
 			}
 			else
 			{
-				context->SetColor(GetColor().x, GetColor().y, GetColor().z, GetAlpha());
+				context->SetColor(GetColor().x, GetColor().y, GetColor().z);
 			}
 		}
 		else
 		{
-			context->SetColor(GetRolloverColor().x, GetRolloverColor().y, GetRolloverColor().z, GetAlpha());
+			context->SetColor(GetRolloverColor().x, GetRolloverColor().y, GetRolloverColor().z);
 			// context->SetColor(m_flRolloverColorR, m_flRolloverColorG, m_flRolloverColorB, 0.25);
 		}
 
 		context->DrawText(message, posX, posY);
 
 		context->SetFont(oldfont);
-		context->SetColor(1, 1, 1, 1);
+		context->SetColor(oldr);
 	}
 
 	void TextButton::HandleMouseEvent()
@@ -269,25 +272,26 @@ namespace LEX
 	void ImageButton::Render()
 	{
 		Context *context = Context::GetCurrent();
+		Vec4 oldr = context->GetColor();
 
 		if (mouseEvent == kEventMouseOver)
 		{
-			context->SetColor(GetRolloverColor().x, GetRolloverColor().y, GetRolloverColor().z, GetAlpha());
+			context->SetColor(GetRolloverColor().x, GetRolloverColor().y, GetRolloverColor().z);
 			//context->SetColor(m_flRolloverColorR, m_flRolloverColorG, m_flRolloverColorB);
 		}
 		else if (mouseEvent == kEventMouseLeftDown)
 		{
-			context->SetColor(GetPressedColor().x, GetPressedColor().y, GetPressedColor().z, GetAlpha());
+			context->SetColor(GetPressedColor().x, GetPressedColor().y, GetPressedColor().z);
 			//context->SetColor(m_flPressedColorR, m_flPressedColorG, m_flPressedColorB);
 		}
 		else
 		{
-			context->SetColor(GetColor().x, GetColor().y, GetColor().z, GetAlpha());
+			context->SetColor(GetColor().x, GetColor().y, GetColor().z);
 			//context->SetColor(m_flColorR, m_flColorG, m_flColorB);
 		}
 
 		context->DrawImage(image, posX, posY, width, height);
-		context->SetColor(1, 1, 1);
+		context->SetColor(oldr);
 	}
 
 	void ImageButton::HandleMouseEvent()
@@ -352,10 +356,89 @@ namespace LEX
 		SetBorderColor(64, 64, 64);
 		SetRolloverBorderColor(0, 112, 204);
 		Init();
+
+		LoadScheme();
 	}
 
 	RectButton::~RectButton()
 	{
+	}
+
+	void RectButton::LoadScheme()
+	{
+		if (FileSystem::GetFileType(FILE_RESOURCE_MENUSCHEME) == 0)
+			return;
+
+		pugi::xml_document xmlPanelRes;
+		Leadwerks::Context* context = Leadwerks::Context::GetCurrent();
+
+		//<buttons>
+		xmlPanelRes.load_file(FILE_RESOURCE_MENUSCHEME);
+		xml_node rootmenunode = xmlPanelRes.child(NODE_BASEPANEL_ROOT_BTN); // basepanel
+
+		// -<text>
+		xml_node textnode = rootmenunode.child(NODE_BASEPANEL_TEXT);
+		std::string textlabelfontval = textnode.attribute("font").value();
+		std::string textlabelfontsizeval = textnode.attribute("size").value();
+		int textlabelsizeint = atoi(textlabelfontsizeval.c_str());
+		SetFont(textlabelfontval, textlabelsizeint);
+
+		// -<colors>
+		xml_node colorsnode = rootmenunode.child(NODE_BASEPANEL_COLORS);
+
+		// --<text>
+		xml_node txtcolornode = colorsnode.child(NODE_BASEPANEL_TEXT);
+		const char* txtcolor_R_vals = txtcolornode.attribute("r").value();
+		const char* txtcolor_G_vals = txtcolornode.attribute("g").value();
+		const char* txtcolor_B_vals = txtcolornode.attribute("b").value();
+		SetTextColor(atof(txtcolor_R_vals),
+			atof(txtcolor_G_vals),
+			atof(txtcolor_B_vals));
+
+		// --<color>
+		xml_node basecolornode = colorsnode.child(NODE_BASEPANEL_BTN_COLOR);
+		const char* basecolor_R_vals = basecolornode.attribute("r").value();
+		const char* basecolor_G_vals = basecolornode.attribute("g").value();
+		const char* basecolor_B_vals = basecolornode.attribute("b").value();
+		SetColor(atof(basecolor_R_vals),
+			atof(basecolor_G_vals),
+			atof(basecolor_B_vals));
+
+		// --<pressed>
+		xml_node pressedcolornode = colorsnode.child(NODE_BASEPANEL_BTN_PRESSED);
+		const char* pressedcolor_R_vals = pressedcolornode.attribute("r").value();
+		const char* pressedcolor_G_vals = pressedcolornode.attribute("g").value();
+		const char* pressedcolor_B_vals = pressedcolornode.attribute("b").value();
+		SetPressedColor(atof(pressedcolor_R_vals),
+			atof(pressedcolor_G_vals),
+			atof(pressedcolor_B_vals));
+
+		// --<rollover>
+		xml_node rollovercolornode = colorsnode.child(NODE_BASEPANEL_BTN_ROLLOVER);
+		const char* rollovercolor_R_vals = rollovercolornode.attribute("r").value();
+		const char* rollovercolor_G_vals = rollovercolornode.attribute("g").value();
+		const char* rollovercolor_B_vals = rollovercolornode.attribute("b").value();
+		SetRolloverColor(atof(rollovercolor_R_vals),
+			atof(rollovercolor_G_vals),
+			atof(rollovercolor_B_vals));
+
+		// --<border>
+		xml_node bordercolornode = colorsnode.child(NODE_BASEPANEL_BTN_BORDER);
+		const char* bordercolor_R_vals = bordercolornode.attribute("r").value();
+		const char* bordercolor_G_vals = bordercolornode.attribute("g").value();
+		const char*bordercolor_B_vals = bordercolornode.attribute("b").value();
+		SetBorderColor(atof(bordercolor_R_vals),
+			atof(bordercolor_G_vals),
+			atof(bordercolor_B_vals));
+
+		// --<highlight>
+		xml_node highlightcolornode = colorsnode.child(NODE_BASEPANEL_BTN_HIGHLIGHT);
+		const char* highlightcolor_R_vals = highlightcolornode.attribute("r").value();
+		const char* highlightcolor_G_vals = highlightcolornode.attribute("g").value();
+		const char* highlightcolor_B_vals = highlightcolornode.attribute("b").value();
+		SetRolloverBorderColor(atof(highlightcolor_R_vals),
+			atof(highlightcolor_G_vals),
+			atof(highlightcolor_B_vals));
 	}
 
 	void RectButton::DrawBorder()
@@ -365,15 +448,15 @@ namespace LEX
 
 		if (mouseEvent == kEventMouseOver)
 		{
-			context->SetColor(GetRolloverBorderColor().x, GetRolloverBorderColor().y, GetRolloverBorderColor().z, GetAlpha());
+			context->SetColor(GetRolloverBorderColor().x, GetRolloverBorderColor().y, GetRolloverBorderColor().z);
 		}
 		else if (mouseEvent == kEventMouseLeftDown)
 		{
-			context->SetColor(GetBorderColor().x, GetBorderColor().y, GetBorderColor().z, GetAlpha());
+			context->SetColor(GetBorderColor().x, GetBorderColor().y, GetBorderColor().z);
 		}
 		else
 		{
-			context->SetColor(GetBorderColor().x, GetBorderColor().y, GetBorderColor().z, GetAlpha());
+			context->SetColor(GetBorderColor().x, GetBorderColor().y, GetBorderColor().z);
 		}
 
 		if (borderLineWidth <= 0)
@@ -394,28 +477,27 @@ namespace LEX
 			context->DrawLine(worldPosX, worldPosY, worldPosX, worldPosY + height);
 			context->DrawLine(worldPosX + width, worldPosY, worldPosX + width, worldPosY + height);
 		}
-
-		context->SetColor(1, 1, 1, 1);
-
 	}
 
 	void RectButton::Render()
 	{
 		Context *context = Context::GetCurrent();
+		Vec4 oldr = context->GetColor();
+		Leadwerks::Font* oldfont = context->GetFont();
 
 		if (mouseEvent == kEventMouseOver)
 		{
-			context->SetColor(GetRolloverColor().x, GetRolloverColor().y, GetRolloverColor().z, GetAlpha());
+			context->SetColor(GetRolloverColor().x, GetRolloverColor().y, GetRolloverColor().z);
 			//context->SetColor(m_flRolloverColorR, m_flRolloverColorG, m_flRolloverColorB);
 		}
 		else if (mouseEvent == kEventMouseLeftDown)
 		{
-			context->SetColor(GetPressedColor().x, GetPressedColor().y, GetPressedColor().z, GetAlpha());
+			context->SetColor(GetPressedColor().x, GetPressedColor().y, GetPressedColor().z);
 			//context->SetColor(m_flPressedColorR, m_flPressedColorG, m_flPressedColorB);
 		}
 		else
 		{
-			context->SetColor(GetColor().x, GetColor().y, GetColor().z, GetAlpha());
+			context->SetColor(GetColor().x, GetColor().y, GetColor().z);
 			//context->SetColor(m_flColorR, m_flColorG, m_flColorB);
 		}
 
@@ -423,7 +505,7 @@ namespace LEX
 
 		if (m_btnmsg != S_NULL)
 		{
-			context->SetColor(GetTextColor().x, GetTextColor().y, GetTextColor().z, GetAlpha());
+			context->SetColor(GetTextColor().x, GetTextColor().y, GetTextColor().z);
 			float x = posX + GetWidth() / 2;
 			float y = posY + GetHeight() / 2;
 
@@ -433,9 +515,9 @@ namespace LEX
 			context->DrawText(m_btnmsg, x, y);
 		}
 
-
-		context->SetColor(1, 1, 1);
 		DrawBorder();
+		context->SetFont(oldfont);
+		context->SetColor(oldr);
 	}
 
 	void RectButton::HandleMouseEvent()
@@ -499,6 +581,7 @@ namespace LEX
 		SetBorderColor(64, 64, 64);
 
 		Init();
+		LoadScheme();
 	}
 
 	BaseCheckBox::~BaseCheckBox()
@@ -506,10 +589,54 @@ namespace LEX
 		//image->Release();
 	}
 
+	void BaseCheckBox::LoadScheme()
+	{
+		if (FileSystem::GetFileType(FILE_RESOURCE_MENUSCHEME) == 0)
+			return;
+
+		pugi::xml_document xmlPanelRes;
+		Leadwerks::Context* context = Leadwerks::Context::GetCurrent();
+
+		//<buttons>
+		xmlPanelRes.load_file(FILE_RESOURCE_MENUSCHEME);
+		xml_node rootmenunode = xmlPanelRes.child("checkbox"); 
+
+
+		// -<colors>
+		xml_node colorsnode = rootmenunode.child(NODE_BASEPANEL_COLORS);
+
+		// --<color>
+		xml_node basecolornode = colorsnode.child(NODE_BASEPANEL_BTN_COLOR);
+		const char* basecolor_R_vals = basecolornode.attribute("r").value();
+		const char* basecolor_G_vals = basecolornode.attribute("g").value();
+		const char* basecolor_B_vals = basecolornode.attribute("b").value();
+		SetColor(atof(basecolor_R_vals),
+			atof(basecolor_G_vals),
+			atof(basecolor_B_vals));
+
+		// --<border>
+		xml_node bordercolornode = colorsnode.child(NODE_BASEPANEL_BTN_BORDER);
+		const char* bordercolor_R_vals = bordercolornode.attribute("r").value();
+		const char* bordercolor_G_vals = bordercolornode.attribute("g").value();
+		const char*bordercolor_B_vals = bordercolornode.attribute("b").value();
+		SetBorderColor(atof(bordercolor_R_vals),
+			atof(bordercolor_G_vals),
+			atof(bordercolor_B_vals));
+
+		// --<check>
+		xml_node txtcolornode = colorsnode.child("check");
+		const char* txtcolor_R_vals = txtcolornode.attribute("r").value();
+		const char* txtcolor_G_vals = txtcolornode.attribute("g").value();
+		const char* txtcolor_B_vals = txtcolornode.attribute("b").value();
+		SetCheckColor(atof(txtcolor_R_vals),
+			atof(txtcolor_G_vals),
+			atof(txtcolor_B_vals));
+	}
+
 	void BaseCheckBox::DrawBorder()
 	{
 		Leadwerks::Context* context = Leadwerks::Context::GetCurrent();
-		context->SetColor(GetBorderColor().x, GetBorderColor().y, GetBorderColor().z, GetAlpha());
+		context->SetColor(GetBorderColor().x, GetBorderColor().y, GetBorderColor().z);
 
 		if (borderLineWidth <= 0)
 			return;
@@ -537,11 +664,11 @@ namespace LEX
 	void BaseCheckBox::Render()
 	{
 		Context *context = Context::GetCurrent();
+		Vec4 oldr = context->GetColor();
 
-		context->SetColor(GetColor().x, GetColor().y, GetColor().z, GetAlpha());
+		context->SetColor(GetColor().x, GetColor().y, GetColor().z);
 		context->DrawRect(posX, posY, width, height);
 
-		context->SetColor(1, 1, 1);
 		DrawBorder();
 
 		if (mouseEvent == kEventMouseLeftUp)
@@ -561,9 +688,11 @@ namespace LEX
 
 		if (IsTicked())
 		{
-			context->SetColor(1, 1, 1);
+			context->SetColor(GetCheckColor().x, GetCheckColor().y, GetCheckColor().z);
 			context->DrawImage(image, posX, posY, image->GetWidth(), image->GetHeight());
 		}
+
+		context->SetColor(oldr);
 	}
 
 	void BaseCheckBox::HandleMouseEvent()

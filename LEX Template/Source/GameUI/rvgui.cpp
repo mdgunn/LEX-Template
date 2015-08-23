@@ -361,9 +361,11 @@ namespace LEX
 			// Close all windows.
 			if (HasWindowOpen())
 			{
-				OptionsDialogPanel->Close();
-				AdvOptionsDialogPanel->Close();
-				QuitDialogPanel->Close();
+				// Don't fade.
+				NewGamePanel->Close(false);
+				OptionsDialogPanel->Close(false);
+				AdvOptionsDialogPanel->Close(false);
+				QuitDialogPanel->Close(false);
 			}
 
 			BGSource->Stop();
@@ -558,7 +560,7 @@ namespace LEX
 					if (world->LoadStartMap())
 					{
 						BGSource->Stop();
-						NewGamePanel->Close();
+						NewGamePanel->Close(false);
 					}
 					else
 					{

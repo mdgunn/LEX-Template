@@ -19,6 +19,7 @@ namespace LEX
 	public:
 		SliderBox(short pWorldPosX = 0, short pWorldPosY = 0, short pWidth = 16, short pHeight = 32);
 		virtual ~SliderBox();
+		virtual void LoadScheme();
 
 		virtual void HandleMouseEvent(void) { RectButton::HandleMouseEvent(); };
 		virtual void Render(void);
@@ -80,6 +81,7 @@ namespace LEX
 		Slider(short pWorldPosX = 0, short pWorldPosY = 0);
 		virtual ~Slider();
 		virtual void Update();
+		virtual void LoadScheme();
 
 		virtual void SetPosition(short x, short y)
 		{
@@ -113,6 +115,21 @@ namespace LEX
 		short GetHeight()
 		{
 			return slider->GetHeight();
+		}
+
+		virtual void SetFont(std::string pFont = FONT_ARIAL, int pSize = 10)
+		{
+			if (pFont == "")
+			{
+				return;
+			}
+
+			if (pSize == NULL)
+			{
+				return;
+			}
+
+			titlefont = Leadwerks::Font::Load(pFont, pSize);
 		}
 
 		// Takes rrr,ggg,bbb then divides by 255 to turn it into a vector.

@@ -6,7 +6,7 @@
 ********************************************************************/
 #include "basepanel.h"
 
-pugi::xml_document xmlPanelRes;
+#define FADE_SPEED 4.5
 
 namespace LEX
 {
@@ -39,13 +39,14 @@ namespace LEX
 		messagefont = context->GetFont();
 
 		SetColor(45, 45, 45);
-		SetAlpha(255);
+		SetAlpha(0);
 		SetBorderColor(64, 64, 64);
+		borderLineWidth = 4;
 		SetLabelColor(153, 153, 153);
 		SetMessageColor(241, 241, 241);
 
 		// 8-19-15: Come back to me!
-		//LoadScheme();
+		LoadScheme();
 	}
 
 	BasePanel::~BasePanel()
@@ -53,23 +54,16 @@ namespace LEX
 		labelfont->Release();
 		messagefont->Release();
 	}
+
 	void BasePanel::LoadScheme()
 	{
 		if (FileSystem::GetFileType(FILE_RESOURCE_MENUSCHEME) == 0)
-		{
-			SetColor(45, 45, 45);
-			SetAlpha(255);
-			SetBorderColor(64, 64, 64);
-			SetLabelColor(153, 153, 153);
-			SetMessageColor(241, 241, 241);
 			return;
-		}
-
+		pugi::xml_document xmlPanelRes;
 		Leadwerks::Context* context = Leadwerks::Context::GetCurrent();
-		// 8-19-15: Come back to me!
-		/*
+
 		//<basepanel>
-		xmlPanelRes.load_file(FILE_RESOURCE_BASEPANEL);
+		xmlPanelRes.load_file(FILE_RESOURCE_MENUSCHEME);
 		xml_node rootmenunode = xmlPanelRes.child(NODE_BASEPANEL_ROOT); // basepanel
 		const char* color_R_vals = rootmenunode.attribute("r").value();
 		const char* color_G_vals = rootmenunode.attribute("g").value();
@@ -79,21 +73,16 @@ namespace LEX
 			atof(color_G_vals),
 			atof(color_B_vals));
 
-		SetAlpha(255);
-
 		// -<border>
 		xml_node bordernode = rootmenunode.child(NODE_BASEPANEL_BORDER);
 		const char* border_color_R_vals = bordernode.attribute("r").value();
 		const char* border_color_G_vals = bordernode.attribute("g").value();
 		const char* border_color_B_vals = bordernode.attribute("b").value();
-		std::string borderthickness = bordernode.attribute("thickness").value();
-		int borderthicknessint = atoi(borderthickness.c_str());
-		borderLineWidth = borderthicknessint;
 
-		SetBorderColor(atof(color_R_vals),
-			atof(color_G_vals),
-			atof(color_B_vals));
-
+		SetBorderColor(atof(border_color_R_vals),
+			atof(border_color_G_vals),
+			atof(border_color_B_vals));
+		
 		// -<text>
 		xml_node textnode = rootmenunode.child(NODE_BASEPANEL_TEXT);
 
@@ -149,30 +138,87 @@ namespace LEX
 		SetMessageColor(atof(text_color_message_R_vals),
 			atof(text_color_message_G_vals),
 			atof(text_color_message_B_vals));
-
-		*/
 	}
 
 	void BasePanel::Draw()
 	{
-		if (!m_bDrawing)
-			return;
+		if (m_bFade)
+		{
+			if (!m_bDrawing)
+			{
+				if (m_bFadedIn)
+				{
+					if (GetAlpha() != 0.0)
+					{
+						float currentalpha = GetAlpha() - FADE_SPEED * Time::GetSpeed() / 100;
+						SetAlpha(currentalpha * 255);
 
+						if (GetAlpha() < 0.0)
+						{
+							SetAlpha(0);
+							m_bFadedIn = false;
+							//System::Print(GetAlpha());
+							return;
+						}
+					}
+					else
+					{
+						SetAlpha(255);
+					}
+				}
+			}
+			else
+			{
+				if (!m_bFadedIn)
+				{
+					if (GetAlpha() <= 1.0)
+					{
+						float currentalpha = GetAlpha() + FADE_SPEED * Time::GetSpeed() / 100;
+						SetAlpha(currentalpha * 255);
+
+						if (GetAlpha() > 1.0)
+						{
+							SetAlpha(255);
+							m_bFadedIn = true;
+						}
+						//System::Print(GetAlpha());
+					}
+					else
+					{
+						SetAlpha(0);
+					}
+				}
+			}
+		}
+		else
+		{
+			if (!m_bDrawing)
+			{
+				m_bFadedIn = false;
+				SetAlpha(0);
+				return;
+			}
+			/*
+			if (!m_bDrawing)
+				return;
+				*/
+		}
+	
 		Leadwerks::Context* context = Leadwerks::Context::GetCurrent();
-		//Leadwerks::Window* window = Leadwerks::Window::GetCurrent();
+		Vec4 oldr = context->GetColor();
 		context->SetColor(GetColor().x, GetColor().y, GetColor().z, GetAlpha());
 		context->DrawRect(posX, posY, width, height);
 
 		if (m_stringlabel != S_NULL)
 		{
 			context->SetFont(labelfont);
-			context->SetColor(GetLabelColor().x, GetLabelColor().y, GetLabelColor().z, 1);
+			context->SetColor(GetLabelColor().x, GetLabelColor().y, GetLabelColor().z);
 			context->DrawText(m_stringlabel, posX + 8, posY + 8);
 		}
 
 		if (m_stringmsg != S_NULL)
 		{
-			context->SetColor(GetMessageColor().x, GetMessageColor().y, GetMessageColor().z, 1);
+			context->SetColor(GetMessageColor().x, GetMessageColor().y, GetMessageColor().z);
 			float x = posX + GetWidth() / 2;
 			float y = posY + GetHeight() / 2;
 
@@ -182,9 +228,9 @@ namespace LEX
 			context->DrawText(m_stringmsg, x, y);
 		}
 
-		context->SetColor(1, 1, 1, 1);
-
 		DrawBorder();
+
+		context->SetColor(oldr);
 	}
 
 	void BasePanel::DrawBorder()
@@ -210,21 +256,36 @@ namespace LEX
 			context->DrawLine(worldPosX, worldPosY, worldPosX, worldPosY + height);
 			context->DrawLine(worldPosX + width, worldPosY, worldPosX + width, worldPosY + height);
 		}
-		context->SetColor(1, 1, 1, 1);
+
+		context->SetColor(1, 1, 1);
 	}
 
-	void BasePanel::Open()
+	void BasePanel::Open(bool pFadeIn)
 	{
 		if (!m_bDrawing)
 		{
+			if (!m_bFade)
+			{
+				SetAlpha(0);
+			}
+
+			m_bFade = pFadeIn;
+
 			m_bDrawing = true;
 		}
 	}
 
-	void BasePanel::Close()
+	void BasePanel::Close(bool pFadeOut)
 	{
 		if (m_bDrawing)
 		{
+			if (!m_bFade)
+			{
+				SetAlpha(255);
+			}
+
+			m_bFade = pFadeOut;
+
 			m_bDrawing = false;
 		}
 	}
@@ -302,7 +363,6 @@ namespace LEX
 		FixButtonPos();
 
 		Leadwerks::Context* context = Leadwerks::Context::GetCurrent();
-		context->SetColor(1, 1, 1, 1);
 
 		CloseButton->Update();
 		if (CloseButton->GetMouseEvent() == kEventMouseLeftUp)
@@ -317,5 +377,6 @@ namespace LEX
 		}
 
 		activatebutton->Update();
+		
 	}
 }

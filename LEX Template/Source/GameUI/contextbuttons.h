@@ -308,7 +308,7 @@ namespace LEX
 			font = Leadwerks::Font::Load(pFont, pSize);
 			width = font->GetTextWidth(message);
 			height = font->GetHeight();
-			//System::Print("TextButton: " + pFont + " " + std::to_string(pSize));
+			DEVMSG("TextButton: " + pFont + " " + std::to_string(pSize));
 		}
 
 		// Set font to a font that's already been loaded.
@@ -367,7 +367,7 @@ namespace LEX
 		//RectButton(short pWidth = 83, short pHeight = 22, short pWorldPosX = 0, short pWorldPosY = 0);
 		RectButton(short pWorldPosX = 0, short pWorldPosY = 0, short pWidth = 83, short pHeight = 22);
 		virtual ~RectButton();
-
+		virtual void LoadScheme();
 		virtual void HandleMouseEvent(void);
 		virtual void Render(void);
 		virtual void DrawBorder();
@@ -427,6 +427,11 @@ namespace LEX
 			buttonfont = Leadwerks::Font::Load(pFont, pSize);
 		}
 
+		virtual void SetContextFont(Leadwerks::Font* pFont)
+		{
+			buttonfont = pFont;
+		}
+
 		void SetButtonLabel(std::string ptxt)
 		{
 			if (ptxt != S_NULL)
@@ -478,7 +483,7 @@ namespace LEX
 	public:
 		BaseCheckBox(short pWorldPosX = 0, short pWorldPosY = 0 /*, short pWidth = 0, short pHeight = 0*/);
 		virtual ~BaseCheckBox();
-
+		virtual void LoadScheme();
 		virtual void HandleMouseEvent(void);
 		virtual void Render(void);
 		virtual void DrawBorder();
@@ -510,24 +515,6 @@ namespace LEX
 			borderLineWidth = width;
 		}
 
-		/*
-		// Takes rrr,ggg,bbb then divides by 255 to turn it into a vector.
-		virtual void SetTickColor(float r, float g, float b)
-		{
-			r = r / 255;
-			g = g / 255;
-			b = b / 255;
-
-			m_vec3TickColor.x = r;
-			m_vec3TickColor.y = g;
-			m_vec3TickColor.z = b;
-		};
-
-		Vec3 GetTickColor()
-		{
-			return m_vec3BorderColor;
-		}
-		*/
 		void SetTick(bool b)
 		{
 			m_bticked = b;
@@ -538,11 +525,30 @@ namespace LEX
 			return m_bticked;
 		}
 
+		// Takes rrr,ggg,bbb then divides by 255 to turn it into a vector.
+		virtual void SetCheckColor(float r, float g, float b)
+		{
+			r = r / 255;
+			g = g / 255;
+			b = b / 255;
+
+			m_vec3CheckColor.x = r;
+			m_vec3CheckColor.y = g;
+			m_vec3CheckColor.z = b;
+
+		};
+
+		Vec3 GetCheckColor()
+		{
+			return m_vec3CheckColor;
+		}
+
+
 	private:
 		bool m_bticked = false;
 		short borderLineWidth;
 		Vec3 m_vec3BorderColor;
-		//Vec3 m_vec3TickColor;
+		Vec3 m_vec3CheckColor;
 		Leadwerks::Texture* image;
 
 	};

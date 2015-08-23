@@ -163,7 +163,13 @@ using namespace pugi;
 #define NODE_BASEPANEL_MESSAGE "message"
 #define NODE_BASEPANEL_BORDER "border"
 #define NODE_BASEPANEL_COLORS "colors"
-
+#define NODE_BASEPANEL_ROOT_BTN "buttons"
+#define NODE_BASEPANEL_BTN_COLOR "color"
+#define NODE_BASEPANEL_BTN_ROLLOVER "rollover"
+#define NODE_BASEPANEL_BTN_PRESSED "pressed"
+#define NODE_BASEPANEL_BTN_BORDER "border"
+#define NODE_BASEPANEL_BTN_HIGHLIGHT "highlight"
+#define NODE_BASEPANEL_ROOT_CHOOSER "chooser"
 // Keys
 #define KEY_SAFTEY Key::End
 #define KEY_SCREENSHOT Key::F5 

@@ -29,7 +29,7 @@ namespace LEX
 		//virtual void SaveSetting(const char *pSetting, const char *pNewVal);
 
 		virtual void Reload();
-		virtual void Open();
+		virtual void Open(bool pFadeIn = true);
 		virtual void ApplyMSAA();
 		virtual void ApplyLightQuality();
 		virtual void ApplyTerrain();
@@ -84,7 +84,7 @@ namespace LEX
 		virtual void FixButtonPos();
 		virtual void Draw();
 		virtual void Reload();
-		virtual void Open();
+		virtual void Open(bool pFadeIn = true);
 		virtual void ApplyDrawStats();
 		void SetWorld(RWorld* pWorld)
 		{

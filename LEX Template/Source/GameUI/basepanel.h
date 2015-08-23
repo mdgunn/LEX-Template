@@ -31,7 +31,7 @@ namespace LEX
 		int prevMouseEvent;
 		*/
 
-		void LoadScheme();
+		virtual void LoadScheme();
 
 		virtual void SetPosition(short x, short y)
 		{
@@ -212,8 +212,8 @@ namespace LEX
 
 		virtual void DrawBorder();
 
-		virtual void Open();
-		virtual void Close();
+		virtual void Open(bool pFadeIn = true);
+		virtual void Close(bool pFadeout = true);
 
 		virtual void SetLabel(std::string pTitle);
 		virtual void SetMessage(std::string pMsg);
@@ -232,6 +232,8 @@ namespace LEX
 		*/
 
 		bool m_bDrawing = false;
+		bool m_bFadedIn = false;
+		bool m_bFade = false;
 		short worldPosX;
 		short worldPosY;
 		short posX;

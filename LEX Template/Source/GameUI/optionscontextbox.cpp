@@ -31,6 +31,8 @@ namespace LEX
 
 		borderLineWidth = pBorderWidth;
 
+		Leadwerks::Context* context = Leadwerks::Context::GetCurrent();
+
 		CH_MSAA = new ChooserMSAA(0, 0, 120, 24);
 		CH_MSAA->SetVisible(true);
 		CH_MSAA->SetPosition(posX + GetWidth() - CH_MSAA->GetWidth() - CONTEXT_INDENT, posY + 58);
@@ -137,11 +139,20 @@ namespace LEX
 		//SAFE_DELETE(SL_Volume);
 	}
 
-	void OptionsContextBox::Open()
+	void OptionsContextBox::Open(bool pFadeIn)
 	{
-		if (m_bDrawing) return;
-		m_bDrawing = true;
-		Reload();
+		if (!m_bDrawing)
+		{
+			if (!m_bFade)
+			{
+				SetAlpha(0);
+			}
+
+			m_bFade = pFadeIn;
+
+			m_bDrawing = true;
+			Reload();
+		}
 	}
 
 	void OptionsContextBox::Reload()
@@ -202,10 +213,13 @@ namespace LEX
 		FixButtonPos();
 
 		Leadwerks::Context* context = Leadwerks::Context::GetCurrent();
-		context->SetColor(1, 1, 1, 1);
+		Vec4 oldr = context->GetColor();
+		Leadwerks::Font* StartingFont = context->GetFont();
 
 		context->SetFont(BasePanel::GetMessageFont());
-
+		
+		context->SetColor(1, 1, 1);
+		
 		context->DrawText("Anti Aliasing",
 			posX + CONTEXT_INDENT,
 			CH_MSAA->GetY() + CH_MSAA->GetHeight() / 4);
@@ -231,7 +245,7 @@ namespace LEX
 			//CB_FullScreen->GetX() - messagefont->GetTextWidth("Fullscreen") - 128, 
 			CB_FullScreen->GetY() + CB_FullScreen->GetHeight() / 4);
 		CB_FullScreen->Update();
-
+		
 		context->SetColor(GetLabelColor().x, GetLabelColor().y, GetLabelColor().z);
 		context->DrawText("GRAPHICS",
 			posX + CONTEXT_INDENT,
@@ -241,18 +255,11 @@ namespace LEX
 			posX + CONTEXT_INDENT,
 			CB_FullScreen->GetY() + CB_FullScreen->GetHeight() + 24);
 
-		/*
-		context->DrawText("MISC",
-			posX + CONTEXT_INDENT,
-			SL_FOV->GetY() + SL_FOV->GetHeight() + 32);
-			*/
-
 		SL_CamSmoothing->Update();
 		ND_CamSmoothing->Update();
 		int csval = SL_CamSmoothing->GetValue();
 		string camerasmoothString = static_cast<ostringstream*>(&(ostringstream() << csval))->str();
 		ND_CamSmoothing->Display(camerasmoothString);
-
 
 		SL_FOV->Update();
 		ND_FOV->Update();
@@ -261,19 +268,20 @@ namespace LEX
 		ND_FOV->Display(fovString);
 
 		/*
-		SL_Volume->Update();
-		ND_Volume->Update();
-		int volval = SL_Volume->GetValue();
-		string volString = static_cast<ostringstream*>(&(ostringstream() << volval))->str();
-		ND_Volume->Display(volString);
+			SL_Volume->Update();
+			ND_Volume->Update();
+			int volval = SL_Volume->GetValue();
+			string volString = static_cast<ostringstream*>(&(ostringstream() << volval))->str();
+			ND_Volume->Display(volString);
 		*/
 
+		context->SetFont(StartingFont);
 		context->DrawText("* Requires Restart",
 			posX + CONTEXT_INDENT,
 			posY + GetHeight() - 24 * 2);
 
 		context->SetColor(GetMessageColor().x, GetMessageColor().y, GetMessageColor().z);
-
+		
 		CloseButton->Update();
 		if (CloseButton->GetMouseEvent() == kEventMouseLeftUp)
 		{
@@ -309,6 +317,8 @@ namespace LEX
 		if (advancedoptionsbutton->GetMouseEvent() == kEventMouseLeftUp)
 		{
 		}
+
+		context->SetColor(oldr);
 	}
 
 	void OptionsContextBox::ApplyMSAA()
@@ -602,11 +612,21 @@ namespace LEX
 			//Close();
 		}
 	}
-	void AdvOptionsContextBox::Open()
+
+	void AdvOptionsContextBox::Open(bool pFadeIn)
 	{
-		if (m_bDrawing) return;
-		m_bDrawing = true;
-		Reload();
+		if (!m_bDrawing)
+		{
+			if (!m_bFade)
+			{
+				SetAlpha(0);
+			}
+
+			m_bFade = pFadeIn;
+
+			m_bDrawing = true;
+			Reload();
+		}
 	}
 
 	void AdvOptionsContextBox::Reload()

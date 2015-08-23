@@ -1,12 +1,14 @@
 <?xml version="1.0"?>
+<!--The main menu-->>
 <menuscheme>
 	<!--Background-->
 	<background>
+		<!--The image value is only used if no background map is supplied.-->
 		<!--If no image is defined here, it will just call the loading screen texture.-->
 		<image image=""/>
 		<music file="" volume="75"/>
 	</background>
-
+	
 	<!--Title-->
 	<title>
 		<image image="Materials/UI/Menu/gamelogo.tex" enable="1"/>
@@ -33,8 +35,9 @@
 	</buttons>
 </menuscheme>
 
+<!--The base window-->
 <basepanel r="45" g="45" b="45">
-	<border r="64" g="64" b="64" thickness="1"/>
+	<border r="64" g="64" b="64"/>
 	<text>
 		<label font="fonts/leadwerks.ttf" size="10"/>
 		<message font="fonts/leadwerks.ttf" size="10"/>
@@ -43,14 +46,61 @@
 			<message r="241" g="241" b="241"/>
 		</colors>	
 	</text>	
-	
-	<buttons>
-		<text font="fonts/leadwerks.ttf" size="10"/>
-		<colors>
-			<color r="45" g="45" b="45"/>
-			<rollover r="192" g="192" b="192"/>
-			<pressed r="37" g="37" b="37"/>
-			<border r="64" g="64" b="64"/>
-		</colors>	
-	</buttons>	
 </basepanel>
+
+<!--Rectangle buttons-->
+<buttons>
+	<text font="fonts/leadwerks.ttf" size="8"/>
+	<colors>
+		<text r="241" g="241" b="241"/>
+		<color r="45" g="45" b="45"/>
+		<rollover r="64" g="64" b="70"/>
+		<pressed r="37" g="37" b="37"/>
+		<border r="64" g="64" b="64"/>
+		<highlight r="0" g="112" b="204"/>
+	</colors>	
+</buttons>	
+
+<!--Chooser-->
+<chooser>
+	<text font="fonts/leadwerks.ttf" size="8"/>
+	<colors>
+		<text r="241" g="241" b="241"/>
+		<color r="37" g="37" b="37"/>
+		<border r="64" g="64" b="64"/>
+		<arrows r="255" g="255" b="255"/>
+	</colors>	
+</chooser>
+
+<!--Checkbox-->
+<checkbox>
+	<colors>
+		<color r="37" g="37" b="37"/>
+		<border r="64" g="64" b="64"/>
+		<check r="255" g="255" b="255"/>
+	</colors>	
+</checkbox>
+
+<!--Slider-->
+<slider>
+	<text font="fonts/leadwerks.ttf" size="8"/>
+	<colors>
+		<text r="241" g="241" b="241"/>
+		<track r="32" g="32" b="32"/>
+		<color r="45" g="45" b="45"/>
+		<pressed r="37" g="37" b="37"/>
+		<rollover r="64" g="64" b="70"/>
+		<border r="64" g="64" b="64"/>
+		<highlight r="0" g="112" b="204"/>
+	</colors>	
+</slider>
+
+<!--Number Display-->
+<numberdisplay>
+	<text font="fonts/leadwerks.ttf" size="8"/>
+	<colors>
+		<text r="241" g="241" b="241"/>
+		<color r="37" g="37" b="37"/>
+		<border r="64" g="64" b="64"/>
+	</colors>
+</numberdisplay>

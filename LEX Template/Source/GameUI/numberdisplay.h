@@ -22,6 +22,7 @@ namespace LEX
 		virtual void Update();
 		virtual void Render(void);
 		virtual void DrawBorder();
+		virtual void LoadScheme();
 
 		virtual void SetPosition(short x, short y)
 		{

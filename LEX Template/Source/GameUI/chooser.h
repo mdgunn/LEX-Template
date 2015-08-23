@@ -18,6 +18,7 @@ namespace LEX
 	public:
 		Chooser(short pWorldPosX = 0, short pWorldPosY = 0, short pWidth = 83, short pHeight = 22);
 		virtual ~Chooser();
+		virtual void LoadScheme();
 		virtual void Update();
 		virtual void Render(void);
 		virtual void DrawBorder();
@@ -110,6 +111,23 @@ namespace LEX
 			return m_vec3BorderColor;
 		}
 
+		// Takes rrr,ggg,bbb then divides by 255 to turn it into a vector.
+		virtual void SetArrowColor(float r, float g, float b)
+		{
+			r = r / 255;
+			g = g / 255;
+			b = b / 255;
+
+			m_vec3ArrowColor.x = r;
+			m_vec3ArrowColor.y = g;
+			m_vec3ArrowColor.z = b;
+		};
+
+		Vec3 GetArrowColor()
+		{
+			return m_vec3ArrowColor;
+		}
+
 		short GetBorderLineWidth(void)
 		{
 			return borderLineWidth;
@@ -143,6 +161,11 @@ namespace LEX
 			}
 
 			chooserfont = Leadwerks::Font::Load(pFont, pSize);
+		}
+
+		virtual void SetFontFile(Leadwerks::Font* pFont)
+		{
+			chooserfont = pFont;
 		}
 
 		void SetLabel(std::string ptxt)
@@ -238,6 +261,7 @@ namespace LEX
 		Vec3 m_vec3TextColor;
 		float m_flAlpha;
 		Vec3 m_vec3BorderColor;
+		Vec3 m_vec3ArrowColor;
 
 		Leadwerks::Font* chooserfont;
 		std::string m_btnmsg;
