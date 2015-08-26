@@ -39,6 +39,20 @@ namespace LEX
 		virtual void ApplyFOV();
 		//virtual void ApplyVolume();
 
+		/*
+		// To fix a bug
+		virtual void SetChildBox(AdvOptionsContextBox* pChildbox)
+		{
+			Childbox = pChildbox;
+		}
+
+		
+		AdvOptionsContextBox* GetChildBox()
+		{
+			return Childbox;
+		}
+		*/
+
 		void SetWorld(RWorld* pWorld)
 		{
 			world = pWorld;
@@ -66,6 +80,8 @@ namespace LEX
 
 		Slider* SL_FOV;
 		NumberDisplay* ND_FOV;
+
+		//AdvOptionsContextBox* Childbox;
 
 		/*
 		Slider* SL_Volume;

@@ -69,7 +69,7 @@ using namespace pugi;
 #define ON "1"
 #define OFF "0"
 #define STRING_ERROR "ERROR :("
-#define LEX_DEVINFO "Leadwerks Extended Executable 100"
+#define LEX_DEVINFO "Leadwerks Extended Executable 101"
 
 #define LUA_APP_CLASS "App"
 
@@ -170,6 +170,7 @@ using namespace pugi;
 #define NODE_BASEPANEL_BTN_BORDER "border"
 #define NODE_BASEPANEL_BTN_HIGHLIGHT "highlight"
 #define NODE_BASEPANEL_ROOT_CHOOSER "chooser"
+
 // Keys
 #define KEY_SAFTEY Key::End
 #define KEY_SCREENSHOT Key::F5 

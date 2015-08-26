@@ -1,4 +1,8 @@
-echo This will DELETE ALL BAK FILES in your game. 
+@ECHO OFF
+
+set gamedir=".\..\"
+
+echo This will DELETE ALL BAK FILES IN %gamedir%. 
 pause
-del  /s /f  .\..\*.bak
+del  /s /f  %gamedir%*.bak
 pause

@@ -127,7 +127,6 @@ namespace LEX
 		SAFE_DELETE(CH_LightQuality);
 		SAFE_DELETE(CH_Terrain);
 		SAFE_DELETE(CB_FullScreen);
-		//SAFE_DELETE(CB_DrawStats);
 
 		SAFE_DELETE(SL_CamSmoothing);
 		SAFE_DELETE(ND_CamSmoothing);
@@ -297,6 +296,9 @@ namespace LEX
 		activatebutton->Update();
 		if (activatebutton->GetMouseEvent() == kEventMouseLeftUp)
 		{
+			// Reload the xml file.
+			xmlSettings.load_file(FILE_SETTINGS);
+
 			ApplyMSAA();
 			ApplyLightQuality();
 			ApplyTerrain();
@@ -333,8 +335,6 @@ namespace LEX
 		world->SetMultisample(i);
 
 		//xmlSettings.save_file(FILE_SETTINGS);
-
-		//SaveSetting(PROPERTY_DRAWSTATS, drawstats);
 	}
 
 	void OptionsContextBox::ApplyLightQuality()
@@ -352,8 +352,6 @@ namespace LEX
 		world->SetLightQuality(i);
 
 		//xmlSettings.save_file(FILE_SETTINGS);
-
-		//SaveSetting(PROPERTY_DRAWSTATS, drawstats);
 	}
 
 	void OptionsContextBox::ApplyTerrain()
@@ -371,8 +369,6 @@ namespace LEX
 		world->SetTerrainQuality(i);
 
 		//xmlSettings.save_file(FILE_SETTINGS);
-
-		//SaveSetting(PROPERTY_DRAWSTATS, drawstats);
 	}
 
 	void OptionsContextBox::ApplyTessellation()
@@ -390,8 +386,6 @@ namespace LEX
 		world->SetTessellationQuality(i);
 
 		//xmlSettings.save_file(FILE_SETTINGS);
-
-		//SaveSetting(PROPERTY_DRAWSTATS, drawstats);
 	}
 
 	void OptionsContextBox::ApplyFullscreen()
@@ -412,9 +406,6 @@ namespace LEX
 		xml_attribute attribue = rootnode.attribute(PROPERTY_FULLSCREEN);
 		attribue.set_value(fullscreen);
 		//xmlSettings.save_file(FILE_SETTINGS);
-
-		//SaveSetting(PROPERTY_FULLSCREEN, fullscreen);
-
 	}
 
 	void OptionsContextBox::ApplyCamSmoothing()
@@ -431,8 +422,6 @@ namespace LEX
 		System::SetProperty(PROPERTY_MOUSESENSITIVITY, camsmooth);
 
 		//xmlSettings.save_file(FILE_SETTINGS);
-
-		//SaveSetting(PROPERTY_DRAWSTATS, drawstats);
 	}
 
 	void OptionsContextBox::ApplyFOV()
@@ -449,8 +438,6 @@ namespace LEX
 		System::SetProperty(PROPERTY_FOV, fov);
 
 		//xmlSettings.save_file(FILE_SETTINGS);
-
-		//SaveSetting(PROPERTY_DRAWSTATS, drawstats);
 	}
 
 	/*
@@ -606,10 +593,11 @@ namespace LEX
 		activatebutton->Update();
 		if (activatebutton->GetMouseEvent() == kEventMouseLeftUp)
 		{
+			// Reload the xml file.
+			xmlSettings.load_file(FILE_SETTINGS);
 			ApplyDrawStats();
 			ApplyVSync();
 			xmlSettings.save_file(FILE_SETTINGS);
-			//Close();
 		}
 	}
 
@@ -663,8 +651,6 @@ namespace LEX
 		xml_attribute attribue = rootnode.attribute(PROPERTY_DRAWSTATS);
 		attribue.set_value(drawstats);
 		//xmlSettings.save_file(FILE_SETTINGS);
-
-		//SaveSetting(PROPERTY_DRAWSTATS, drawstats);
 	}
 
 	void AdvOptionsContextBox::ApplyVSync()
@@ -687,7 +673,5 @@ namespace LEX
 		xml_attribute attribue = rootnode.attribute(PROPERTY_VSYNC);
 		attribue.set_value(vs);
 		//xmlSettings.save_file(FILE_SETTINGS);
-
-		//SaveSetting(PROPERTY_DRAWSTATS, drawstats);
 	}
 }

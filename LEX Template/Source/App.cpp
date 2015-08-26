@@ -93,12 +93,21 @@ bool App::Start()
 
     // Toggle fullscreen.
 	unsigned int intStyle = Leadwerks::Window::Titlebar;
+	
+	// Get the screen res from the settings file.
+	unsigned int resx = atoi(System::GetProperty(PROPERTY_SCREENWIDTH, x).c_str());;
+	unsigned int resy = atoi(System::GetProperty(PROPERTY_SCREENHEIGHT, y).c_str());;
 	if (System::GetProperty(PROPERTY_FULLSCREEN, fullscreen) == ON)
     {
         intStyle = Leadwerks::Window::FullScreen;
+
+		/* 8-25-15: In fullscreen, always use the current monitor dimentions.*/
+		resx = System::GetGraphicsMode(System::CountGraphicsModes() - 1).x;
+		resy = System::GetGraphicsMode(System::CountGraphicsModes() - 1).y;
     }
 	else if (System::GetProperty(PROPERTY_VR, OFF) == ON)
     {
+		// I'm gonna be honest, I have no idea if VR works or not.
 		intStyle = Leadwerks::Window::VRDisplay;
     }
 
@@ -117,10 +126,7 @@ bool App::Start()
 		}
 	}
 
-	//Create a window.
-	unsigned int resx = atoi(System::GetProperty(PROPERTY_SCREENWIDTH, x).c_str());
-	unsigned int resy = atoi(System::GetProperty(PROPERTY_SCREENHEIGHT, y).c_str());
-
+	
 	// Title of window.
 	/*
 	std::string werkfile;
@@ -139,6 +145,8 @@ bool App::Start()
 		SAFE_DELETE(dir);
 	}
 	*/
+
+	//Create a window.
 	window = Leadwerks::Window::Create(GetWindowTitle(), 0, 0, resx, resy, intStyle);
 
 	//Create a context.
@@ -258,16 +266,20 @@ bool App::Loop()//lua
 		world->Disconnect();
 	}
 
-	// Check to see if the window is active. 
-	// Pause the game if it's not.
+	//---------------------------------------------------------\\
+	// This will be fixed engine side in a future version of LE.
+	// For now, we are gonna apply this patch. 
 	if (window->Active())
 	{ 
 		// Update the world.
 		world->Update();
 	}
 
-    // Always Render The World
-    world->Render();
+	if (window->Minimized() == false)
+	{
+		world->Render();
+	}
+	//---------------------------------------------------------\\
 
 	// Test if we should make the mouse visible.
     if (ShouldDrawMouse())

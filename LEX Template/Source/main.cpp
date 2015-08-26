@@ -108,6 +108,7 @@ int main(int argc,const char *argv[])
 		xml_node rootnode = xmlSettings.append_child(NODE_SETTINGS_ROOT);
 		xml_node resnode = rootnode.append_child(NODE_SETTINGS_DISPLAY);
 
+		/*
 		// The default screen res is the user's current res size from the graphics driver.
 		unsigned int xo = System::GetGraphicsMode(System::CountGraphicsModes() - 1).x;
 		std::string sx = patch::to_string(xo);
@@ -119,8 +120,14 @@ int main(int argc,const char *argv[])
 
 		resnode.append_attribute(PROPERTY_SCREENWIDTH) = pchar_resX;
 		resnode.append_attribute(PROPERTY_SCREENHEIGHT) = pchar_resY;
+		*/
 
-		// We have fullscreen disabled by default.
+		/* 8-25-15: The app class will get the monitor's dimention only if it's fullscreen.*/
+		resnode.append_attribute(PROPERTY_SCREENWIDTH) = "1024";
+		resnode.append_attribute(PROPERTY_SCREENHEIGHT) = "768";
+
+		// We have fullscreen disabled by default. 
+		//Some programs such as the Samsung SSD Wizard don't allow LE to go fullscreen if it's running.
 		resnode.append_attribute(PROPERTY_FULLSCREEN) = "0"; // 0 or 1
 
 		xml_node graphicsnode = rootnode.append_child(NODE_SETTINGS_GRAPHICS);
