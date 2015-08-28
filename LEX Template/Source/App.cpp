@@ -347,8 +347,8 @@ bool App::SaveFile()//lua
 /* Input: Pause the game */
 bool App::Pause()//lua
 {
-	//world->Pause();
-	return world->IsPaused();
+	world->Pause();
+	return true;
 };
 
 /* Test to see if we should draw the mouse. */
