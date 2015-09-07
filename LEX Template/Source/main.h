@@ -111,6 +111,7 @@ using namespace pugi;
 #define PROPERTY_SCREENWIDTH "screenwidth"				// Screenwidth
 #define PROPERTY_SCREENHEIGHT "screenheight"			// Screenheight
 #define PROPERTY_FULLSCREEN "fullscreen"				// Fullscreen
+#define PROPERTY_FORCERES	"forceres"					// Force the res listed in the settings file.
 #define PROPERTY_VR "vr"								// Virtual Reality 
 #define PROPERTY_LIGHTINGQUALITY "lightquality"			// Light Quality
 #define PROPERTY_MULTISAMPLE "multisample"				// Multisampling (MSAA)

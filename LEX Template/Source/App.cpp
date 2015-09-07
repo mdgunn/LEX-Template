@@ -97,11 +97,11 @@ bool App::Start()
 	// Get the screen res from the settings file.
 	unsigned int resx = atoi(System::GetProperty(PROPERTY_SCREENWIDTH, x).c_str());;
 	unsigned int resy = atoi(System::GetProperty(PROPERTY_SCREENHEIGHT, y).c_str());;
-	if (System::GetProperty(PROPERTY_FULLSCREEN, fullscreen) == ON)
+	if (System::GetProperty(PROPERTY_FULLSCREEN, fullscreen) == ON && System::GetProperty(PROPERTY_FORCERES, OFF) == OFF) //<- Have it possible to force read the settings file
     {
         intStyle = Leadwerks::Window::FullScreen;
 
-		/* 8-25-15: In fullscreen, always use the current monitor dimentions.*/
+		/* 8-25-15: In fullscreen, always use the current monitor dimentions.*/ 
 		resx = System::GetGraphicsMode(System::CountGraphicsModes() - 1).x;
 		resy = System::GetGraphicsMode(System::CountGraphicsModes() - 1).y;
     }
