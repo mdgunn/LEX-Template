@@ -32,6 +32,7 @@ function Script:Start()
 	-- all your clips are. This right here will make it invisible in-game.
 	material = Material:Load("Materials/Effects/Invisible.mat")
 	self.entity:SetMaterial(material)
+	material:Release()
 end
 
 function Script:Enable()--in
